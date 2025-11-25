@@ -15,15 +15,16 @@ import {
 	CircleCheckBig,
 } from "lucide-react"
 import { CategoryCard } from "@/components/CategoryCard"
+import Image from "next/image"
 
 const Page = () => {
 	return (
 		<div className="min-h-screen cosmic-gradient">
 			{/* <Navbar /> */}
 
-			<main className="pt-16">
+			<main className="pt-12">
 				{/* Hero Section */}
-				<section className="relative w-full py-20 md:py-32 overflow-hidden">
+				<section className="relative w-full py-16 overflow-hidden">
 					<Stars />
 					<div className="container mx-auto px-4 text-center relative z-20">
 						<h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6">
@@ -42,17 +43,20 @@ const Page = () => {
 					</div>
 
 					{/* Horizon glow */}
-					<div
-						className="absolute bottom-0 left-0 w-full h-64 pointer-events-none z-10"
-						style={{
-							maskImage: "linear-gradient(to bottom, transparent, black 50%)",
-							WebkitMaskImage: "linear-gradient(to bottom, transparent, black 50%)",
-						}}>
-						<div className="horizon-glow"></div>
+					<div className="blur-xl container mb-0 -mt-10">
+						<div className="relative w-full h-[285px] ">
+							<Image
+								src="/gloww.png"
+								alt="gloww"
+								fill
+								className="object-contain"
+								sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 1200px"
+							/>
+						</div>
 					</div>
 				</section>
 				{/* Why PulseDelta matters */}
-				<section className="container mx-auto px-4 py-16 bg-transparent border-none border-transparent">
+				<section className="container mx-auto px-4 py-16 bg-transparent border-none border-transparent -mt-20">
 					<div className="text-center mb-12">
 						<h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Why PulseDelta Matters</h2>
 						<p className="text-muted-foreground">See how PulseDelta gets you from guess to reward.</p>
