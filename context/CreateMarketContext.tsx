@@ -17,68 +17,49 @@ export const initialFormData: MarketFormData = {
 	liquidity: 500,
 }
 
-// Create the Context, initialized to undefined
 export const CreateMarketContext = createContext<CreateMarketContextType | undefined>(undefined)
 
 export const CreateMarketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [currentStep, setCurrentStep] = useState(1)
 	const [formData, setFormData] = useState<MarketFormData>(initialFormData)
 
-	// 1. Stabilize handleFormChange (Dependencies: [])
 	const handleFormChange = useCallback((field: keyof MarketFormData, value: string | number) => {
 		setFormData((prev) => ({ ...prev, [field]: value }))
 	}, [])
 
-	// 2. Stabilize handleNext (Dependencies: [currentStep, formData.question, formData.liquidity])
 	const handleNext = useCallback(() => {
-		console.log(`${currentStep}/${TOTAL_STEPS} `)
+		setCurrentStep((prev) => {
+			console.log(`[handleNext] Current step: ${prev}, Total steps: ${TOTAL_STEPS}`)
 
-		// if (currentStep === 2) {
-		// 	// --- Validation for Step 2 ---
+			if (prev < TOTAL_STEPS) {
+				console.log(`[handleNext] Moving to step ${prev + 1}`)
+				return prev + 1
+			}
 
-		// 	// 2a. Check if question is present and non-empty (string check)
-		// 	if (!formData.question || String(formData.question).trim() === "") {
-		// 		console.error("Validation failed: Market Question cannot be empty.")
-		// 		return
-		// 	}
+			console.log(`[handleNext] Already at final step, staying at ${prev}`)
+			return prev
+		})
+	}, [])
 
-		// 	// 2b. Check liquidity (must be non-empty and a positive number)
-		// 	const liquidityValue = formData.liquidity
-
-		// 	// Check if input is empty (the component now passes "" for empty input)
-		// 	if (liquidityValue === "") {
-		// 		console.error("Validation failed: Initial Liquidity cannot be empty.")
-		// 		return
-		// 	}
-
-		// 	// Check if it's a valid positive number (handles 0, negatives, non-finite numbers)
-		// 	const liquidityValid = Number.isFinite(Number(liquidityValue)) && Number(liquidityValue) > 0
-		// 	if (!liquidityValid) {
-		// 		console.error("Validation failed: Initial Liquidity must be a positive number.")
-		// 		return
-		// 	}
-		// }
-
-		if (currentStep < TOTAL_STEPS) {
-			setCurrentStep((prev) => prev + 1)
-		}
-	}, [currentStep, formData.question, formData.liquidity])
-
-	// 3. Stabilize handleBack (Dependencies: [currentStep])
 	const handleBack = useCallback(() => {
-		if (currentStep > 1) {
-			setCurrentStep((prev) => prev - 1)
-		}
-	}, [currentStep])
+		setCurrentStep((prev) => {
+			console.log(`[handleBack] Current step: ${prev}`)
+			if (prev > 1) {
+				console.log(`[handleBack] Moving to step ${prev - 1}`)
+				return prev - 1
+			}
+			return prev
+		})
+	}, [])
 
-	// 4. Stabilize handleSubmit (Dependencies: [formData])
 	const handleSubmit = useCallback(
 		(e: React.FormEvent) => {
 			e.preventDefault()
+			console.log("[handleSubmit] Deploying market with data:", formData)
 
-			console.log("Submitting form data:", formData)
-			//Our deployment logic here
+			// TODO: lockchain deployment logic
 
+			// Reset form after successful deployment
 			setFormData(initialFormData)
 			setCurrentStep(1)
 		},
