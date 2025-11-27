@@ -9,7 +9,7 @@ import { markets as dummyMarkets } from "@/data/markets"
 
 const Markets = () => {
 	const [status, setStatus] = useState("trending")
-	const [type, setType] = useState("All")
+	const [type, setType] = useState("All Market")
 	const [page, setPage] = useState(1)
 	const [loading, setLoading] = useState(true)
 	const [displayed, setDisplayed] = useState([] as typeof dummyMarkets)
