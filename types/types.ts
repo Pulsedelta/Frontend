@@ -2,13 +2,18 @@
 export interface Market {
 	id: number
 	title: string
+	status: "trending" | "ending-soon" | "high-value" | "newest" | "closed"
+	type: "Crypto" | "Entertainment" | "Sports" | "Politics" | "Weather" | "other"
+	marketType: "binary" | "multi" | "scalar"
 	question: string
+	description?: string
 	liquidity: string
 	volume: string
 	duration: string
 	participants: number
-	status: string
-	type: string
+	outcomes?: MarketOutcome[]
+	createdAt?: string
+	endsAt?: string
 }
 
 export interface MarketTypeCardProps {
@@ -36,7 +41,8 @@ export interface MarketCategoryCardProps {
 export interface MarketOutcome {
 	id: string
 	option: string
-	description: string
+	percentage?: number
+	description?: string
 }
 
 export interface MarketFormData {

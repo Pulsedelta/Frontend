@@ -14,6 +14,7 @@ const Markets = () => {
 	const [loading, setLoading] = useState(true)
 	const [imageLoaded, setImageLoaded] = useState(false)
 	const [displayed, setDisplayed] = useState([] as typeof dummyMarkets)
+	console.log(dummyMarkets)
 
 	const PAGE_SIZE = 6
 
