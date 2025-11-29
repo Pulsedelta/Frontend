@@ -19,20 +19,24 @@ export default function MultiOutcomeMarketView({ market }: MultiOutcomeMarketVie
 		outcomes.map((outcome) => outcome.percentage || parseFloat((Math.random() * 40 + 10).toFixed(1)))
 	)
 	return (
-		<div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 sticky top-4">
+		<div className="bg-secondary-dark border border-secondary-light rounded-xl p-6 sticky top-4">
 			{/* Tabs */}
-			<div className="flex gap-2 mb-6">
+			<div className="flex gap-2 mb-6 border border-secondary-light rounded-lg">
 				<button
 					onClick={() => setActiveTab("buy")}
-					className={`flex-1 px-4 py-2 rounded-lg font-semibold transition ${
-						activeTab === "buy" ? "bg-orange-500 text-white" : "bg-zinc-800 text-gray-400 hover:text-white"
+					className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-all ${
+						activeTab === "buy"
+							? "bg-primary text-foreground"
+							: "bg-secondary-dark text-gray-400 hover:text-white"
 					}`}>
 					Buy
 				</button>
 				<button
 					onClick={() => setActiveTab("sell")}
 					className={`flex-1 px-4 py-2 rounded-lg font-semibold transition ${
-						activeTab === "sell" ? "bg-orange-500 text-white" : "bg-zinc-800 text-gray-400 hover:text-white"
+						activeTab === "sell"
+							? "bg-primary text-foreground"
+							: "bg-secondary-dark text-gray-400 hover:text-white"
 					}`}>
 					Sell
 				</button>
@@ -46,7 +50,7 @@ export default function MultiOutcomeMarketView({ market }: MultiOutcomeMarketVie
 					placeholder="0.00"
 					value={amount}
 					onChange={(e) => setAmount(e.target.value)}
-					className="bg-zinc-800 border-zinc-700 text-white"
+					className="bg-secondary-dark border-secondary-light text-foreground"
 				/>
 			</div>
 
@@ -58,14 +62,14 @@ export default function MultiOutcomeMarketView({ market }: MultiOutcomeMarketVie
 						onClick={() => setSelectedOutcome(outcome.id)}
 						className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition ${
 							selectedOutcome === outcome.id
-								? "border-orange-500 bg-orange-500/10"
-								: "border-zinc-700 bg-zinc-800 hover:border-zinc-600"
+								? "border-primary bg-primary/10"
+								: "border-secondary-light bg-secondary-dark"
 						}`}>
 						<div className="flex items-center gap-2">
 							<div
 								className="w-3 h-3 rounded-full"
 								style={{ backgroundColor: colors[index % colors.length] }}></div>
-							<span className="font-semibold text-white">{outcome.option}</span>
+							<span className="font-semibold text-foreground">{outcome.option}</span>
 						</div>
 						<span className="font-bold" style={{ color: colors[index % colors.length] }}>
 							{outcomePercentages[index]}%
@@ -76,22 +80,22 @@ export default function MultiOutcomeMarketView({ market }: MultiOutcomeMarketVie
 
 			{/* Action Button */}
 			<Button
-				className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-6"
+				className="w-full bg-primary hover:bg-primary text-foreground font-bold py-6"
 				disabled={!selectedOutcome}>
 				{activeTab === "buy" ? "Buy Shares" : "Sell Shares"}
 			</Button>
 
 			{/* Summary */}
-			<div className="mt-6 pt-6 border-t border-zinc-800 space-y-2 text-sm">
+			<div className="mt-6 pt-6 border-t border-secondary-light space-y-2 text-sm">
 				<div className="flex justify-between text-gray-400">
 					<span>Potential Return</span>
-					<span className="text-white font-semibold">
+					<span className="text-foreground font-semibold">
 						{amount ? `${(parseFloat(amount) * 1.85).toFixed(2)} wDAG` : "0.00 wDAG"}
 					</span>
 				</div>
 				<div className="flex justify-between text-gray-400">
 					<span>Trading Fee (0.5%)</span>
-					<span className="text-white font-semibold">
+					<span className="text-foreground font-semibold">
 						{amount ? `${(parseFloat(amount) * 0.005).toFixed(3)} wDAG` : "0.000 wDAG"}
 					</span>
 				</div>
