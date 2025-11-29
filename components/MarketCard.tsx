@@ -4,6 +4,7 @@ import { ChartColumn, Clock5, User } from "lucide-react"
 import Link from "next/link"
 
 export default function MarketCard({ market }: { market: Market }) {
+	console.log(market.type)
 	return (
 		<Link href={`/markets/market/${market.id}`} className="bloc">
 			<div className="flex flex-col items-center p-6 pb-0 rounded-xl border border-gray-800 hover:border-primary-light hover:shadow-md hover:shadow-primary-light transition-colors">

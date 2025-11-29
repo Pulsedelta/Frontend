@@ -3,7 +3,7 @@ export interface Market {
 	id: number
 	title: string
 	status: "trending" | "ending-soon" | "high-value" | "newest" | "closed"
-	type: "Crypto" | "Entertainment" | "Sports" | "Politics" | "Weather" | "other"
+	type: "Crypto" | "Entertainment" | "Sports" | "Politics" | "Weather" | "Other"
 	marketType: "binary" | "multi" | "scalar"
 	question: string
 	description?: string
