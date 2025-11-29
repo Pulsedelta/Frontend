@@ -1,9 +1,5 @@
-import { Market } from "@/types/types"
+import { MarketStatsProps } from "@/types/types"
 import { ChartColumn, Clock5, Users, TrendingUp } from "lucide-react"
-
-interface MarketStatsProps {
-	market: Market
-}
 
 export default function MarketStats({ market }: MarketStatsProps) {
 	const stats = [

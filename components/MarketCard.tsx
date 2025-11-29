@@ -4,7 +4,6 @@ import { ChartColumn, Clock5, User } from "lucide-react"
 import Link from "next/link"
 
 export default function MarketCard({ market }: { market: Market }) {
-	console.log(market.type)
 	return (
 		<Link href={`/markets/market/${market.id}`} className="bloc">
 			<div className="flex flex-col items-center p-6 pb-0 rounded-xl border border-gray-800 hover:border-primary-light hover:shadow-md hover:shadow-primary-light transition-colors">
@@ -17,9 +16,9 @@ export default function MarketCard({ market }: { market: Market }) {
 					{/* Tags & Participants Row */}
 					<div className="flex justify-between items-center w-full px-3 sm:px-4 pt-4 sm:pt-6">
 						<div
-							className={`text-xs font-medium rounded-md px-2 py-0.5
-    ${TYPE_BADGE_STYLES[market.type] ?? "bg-gray-800 text-gray-300"}
-  `}>
+							className={`text-xs font-medium rounded-md px-2 py-0.5 ${
+								TYPE_BADGE_STYLES[market.type] ?? "bg-gray-800 text-gray-300"
+							}`}>
 							{market.type}
 						</div>
 

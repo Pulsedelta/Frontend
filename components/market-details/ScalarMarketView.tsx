@@ -1,12 +1,8 @@
 "use client"
-import { Market } from "@/types/types"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-
-interface ScalarMarketViewProps {
-	market: Market
-}
+import { ScalarMarketViewProps } from "@/types/types"
 
 export default function ScalarMarketView({ market }: ScalarMarketViewProps) {
 	const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy")

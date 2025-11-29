@@ -10,12 +10,7 @@ import MultiOutcomeMarketView from "@/components/market-details/MultiOutcomeMark
 import ScalarMarketView from "@/components/market-details/ScalarMarketView"
 import MarketChart from "@/components/market-details/MarketChart"
 import MarketStats from "@/components/market-details/MarketStats"
-
-interface MarketDetailPageProps {
-	params: Promise<{
-		id: string
-	}>
-}
+import { MarketDetailPageProps } from "@/types/types"
 
 export default function MarketDetailPage({ params }: MarketDetailPageProps) {
 	const router = useRouter()

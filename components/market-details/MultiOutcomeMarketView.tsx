@@ -1,12 +1,9 @@
 "use client"
-import { Market } from "@/types/types"
+
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-
-interface MultiOutcomeMarketViewProps {
-	market: Market
-}
+import { MultiOutcomeMarketViewProps } from "@/types/types"
 
 export default function MultiOutcomeMarketView({ market }: MultiOutcomeMarketViewProps) {
 	const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy")

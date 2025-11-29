@@ -38,6 +38,26 @@ export interface MarketCategoryCardProps {
 	onClick?: () => void
 }
 
+export interface MarketDetailPageProps {
+	params: Promise<{ id: string }>
+}
+
+export interface MarketStatsProps {
+	market: Market
+}
+
+export interface MarketChartProps {
+	market: Market
+}
+
+export interface MultiOutcomeMarketViewProps {
+	market: Market
+}
+
+export interface ScalarMarketViewProps {
+	market: Market
+}
+
 export interface MarketOutcome {
 	id: string
 	option: string
@@ -54,7 +74,6 @@ export interface MarketFormData {
 	liquidity: number
 	resolutionSource: string
 	resolutionDate: string
-	// Multi-outcome specific
 	outcomes?: MarketOutcome[]
 }
 
