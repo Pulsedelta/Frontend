@@ -60,7 +60,7 @@ export default function MarketDetailPage({ params }: MarketDetailPageProps) {
 		<div className="min-h-screen cosmic-gradient">
 			<main className="container pt-20 px-4 pb-10">
 				{/* Header Actions */}
-				<div className="flex justify-between items-center mb-6">
+				<div className="flex justify-between items-center mb-6 mt-10">
 					<button
 						onClick={() => router.back()}
 						className="flex items-center gap-2 px-4 py-2 rounded-lg border border-secondary-foreground transition text-foreground hover:text-white">
