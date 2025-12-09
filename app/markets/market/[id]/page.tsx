@@ -47,31 +47,51 @@ export default function MarketDetailPage({ params }: MarketDetailPageProps) {
 		<div className="min-h-screen cosmic-gradient px-4">
 			<main className="container pt-24 px-4">
 				{/* Header Actions */}
-				<div className="flex justify-between items-start mb-8">
+				<div className="flex justify-between items-center mb-8">
+					{/* BACK BUTTON */}
 					<button
 						onClick={() => router.back()}
-						className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors pl-0">
-						<ChevronLeft className="w-5 h-5" />
+						className="
+            group flex items-center gap-2 px-4 py-2 rounded-xl border border-transparent 
+            text-gray-400 transition-all duration-300
+            hover:border-orange-500 hover:text-orange-500 hover:bg-white/5
+        ">
+						{/* Icon inherits color from text-gray-400 -> hover:text-orange-500 */}
+						<ChevronLeft className="w-5 h-5 transition-colors" />
 						<span className="font-medium">Back</span>
 					</button>
 
 					<div className="flex items-center gap-4">
+						{/* COPY LINK BUTTON */}
 						<button
 							onClick={handleCopyLink}
-							className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors p-2">
+							className="
+                group flex items-center gap-2 px-4 py-2 rounded-xl border border-transparent 
+                text-gray-400 transition-all duration-300
+                hover:border-orange-500 hover:text-orange-500 hover:bg-white/5
+            ">
 							{copied ? (
-								<span className="text-primary flex items-center gap-2 text-sm">
-									<Copy className="w-4 h-4" /> Copied
-								</span>
+								<>
+									<Copy className="w-4 h-4 text-primary" />
+									<span className="text-primary font-medium">Copied</span>
+								</>
 							) : (
-								<span className="flex items-center gap-2 text-sm">
-									<Copy className="w-4 h-4" /> Copy Link
-								</span>
+								<>
+									<Copy className="w-4 h-4 transition-colors" />
+									<span className="font-medium">Copy Link</span>
+								</>
 							)}
 						</button>
+
+						{/* TRADE SHARE BUTTON */}
 						<button
 							onClick={handleTradeShare}
-							className="bg-primary hover:bg-primary-dark text-white px-5 py-2 rounded-md text-sm shadow-lg shadow-orange-500/20">
+							className="
+                bg-primary hover:bg-primary-dark
+                text-white font-bold text-sm px-6 py-2.5 
+                rounded-xl 
+                transition-all transform active:scale-95
+            ">
 							Trade Share
 						</button>
 					</div>
