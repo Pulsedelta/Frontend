@@ -1,47 +1,35 @@
-import React from "react"
-import { TrendingUp } from "lucide-react"
-import Link from "next/link"
-import { LiquidityPositionCardProps } from "@/types/types"
+import { Droplets } from "lucide-react"
 
-export default function LiquidityPositionCard({
-	marketId,
-	question,
-	amount,
-	shares,
-	percentEarned,
-}: LiquidityPositionCardProps) {
-	const isPositive = parseFloat(percentEarned) > 0
+interface LiquidityPositionProps {
+	marketQuestion: string
+	lpTokens: string
+	value: string
+	feesEarned: string
+	image?: string
+}
 
+export default function LiquidityPositionCard({ marketQuestion, lpTokens, value, feesEarned }: LiquidityPositionProps) {
 	return (
-		<Link href={`/markets/market/${marketId}`}>
-			<div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-5 hover:border-zinc-700 transition-colors cursor-pointer">
-				{/* Question */}
-				<p className="text-white font-semibold text-base sm:text-lg mb-3 line-clamp-2">{question}</p>
+		<div className="flex items-start justify-between py-4 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors rounded-lg px-2 -mx-2">
+			<div className="flex gap-4">
+				{/* Icon Box */}
+				<div className="flex-shrink-0 w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center border border-green-500/20">
+					<Droplets className="w-5 h-5 text-green-500" />
+				</div>
 
-				{/* Stats Row */}
-				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
-					{/* Amount and Shares */}
-					<div className="flex items-center gap-4">
-						<div>
-							<p className="text-gray-500 text-xs">Amount</p>
-							<p className="text-white font-medium">{amount}</p>
-						</div>
-						<div>
-							<p className="text-gray-500 text-xs">Shares</p>
-							<p className="text-white font-medium">{shares.toLocaleString()}</p>
-						</div>
-					</div>
-
-					{/* Percent Earned */}
-					<div className="flex items-center gap-1.5">
-						<TrendingUp className={`w-4 h-4 ${isPositive ? "text-green-500" : "text-red-500"}`} />
-						<span className={`font-bold ${isPositive ? "text-green-500" : "text-red-500"}`}>
-							{isPositive ? "+" : ""}
-							{percentEarned}% earned
-						</span>
-					</div>
+				{/* Market Details */}
+				<div className="flex flex-col gap-1">
+					<h3 className="text-sm font-semibold text-white leading-tight max-w-[200px] sm:max-w-xs">
+						{marketQuestion}
+					</h3>
+					<span className="text-xs text-gray-500 font-mono">{lpTokens} LP tokens</span>
 				</div>
 			</div>
-		</Link>
+
+			<div className="flex flex-col gap-1 text-right">
+				<span className="text-sm font-bold text-white font-mono">{value}</span>
+				<span className="text-xs text-gray-500">{feesEarned} fees earned</span>
+			</div>
+		</div>
 	)
 }

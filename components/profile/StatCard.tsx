@@ -1,14 +1,22 @@
-import { StatCardProps } from "@/types/types"
-import React from "react"
+import { ReactNode } from "react"
+import { cn } from "@/lib/utils"
 
-export default function StatCard({ label, value, icon, iconBg }: StatCardProps) {
+interface StatCardProps {
+	label: string
+	value: string
+	icon: ReactNode
+	iconColorClass: string // e.g., "bg-red-500/10 text-red-500"
+}
+
+export default function StatCard({ label, value, icon, iconColorClass }: StatCardProps) {
 	return (
-		<div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-6">
-			<div className="flex justify-between items-start mb-3">
-				<p className="text-gray-400 text-sm">{label}</p>
-				<div className={`w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center`}>{icon}</div>
+		<div className="bg-[#09090b] border border-white/5 rounded-2xl p-5 flex items-center justify-between transition-all hover:border-white/10">
+			<div className="flex flex-col gap-1">
+				<span className="text-xs font-medium text-gray-400">{label}</span>
+				<span className="text-xl font-bold text-white tracking-wide">{value}</span>
 			</div>
-			<p className="text-white text-xl sm:text-2xl font-bold">{value}</p>
+
+			<div className={cn("p-2 rounded-lg flex items-center justify-center", iconColorClass)}>{icon}</div>
 		</div>
 	)
 }

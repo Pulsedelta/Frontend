@@ -137,15 +137,15 @@ export interface LiquidityPosition {
 	question: string
 	amount: string
 	shares: number
-	status: "active" | "closed"
+	status: string
 	percentEarned: string
 }
 
 export interface Activity {
 	id: string
-	type: "trade" | "create" | "liquidity" | "resolve"
+	type: "trade" | "create"
 	description: string
 	amount: string
 	timestamp: string
-	status: "success" | "failed" | "pending"
+	status: "success" | "failed"
 }

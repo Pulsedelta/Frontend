@@ -44,7 +44,7 @@ export default function MarketDetailPage({ params }: MarketDetailPageProps) {
 	}
 
 	return (
-		<div className="min-h-screen cosmic-gradient px-4">
+		<div className="min-h-screen cosmic-gradient px-4 pb-20">
 			<main className="container pt-24 px-4">
 				{/* Header Actions */}
 				<div className="flex justify-between items-center mb-8">
@@ -55,7 +55,7 @@ export default function MarketDetailPage({ params }: MarketDetailPageProps) {
             group flex items-center justify-center gap-2 
             p-2 sm:px-4 sm:py-2 rounded-xl border border-transparent 
             text-gray-400 transition-all duration-300
-            hover:border-orange-500 hover:text-orange-500 hover:bg-white/5
+            hover:border-primary hover:text-primary hover:bg-white/5
         "
 						aria-label="Go Back">
 						<ChevronLeft className="w-6 h-6 sm:w-5 sm:h-5 transition-colors" />
@@ -71,7 +71,7 @@ export default function MarketDetailPage({ params }: MarketDetailPageProps) {
                 group flex items-center justify-center gap-2 
                 p-2 sm:px-4 sm:py-2 rounded-xl border border-transparent 
                 text-gray-400 transition-all duration-300
-                hover:border-orange-500 hover:text-orange-500 hover:bg-white/5
+                hover:border-primary hover:text-primary hover:bg-white/5
             "
 							aria-label="Copy Link">
 							{copied ? (
