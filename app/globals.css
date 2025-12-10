@@ -192,6 +192,23 @@
         text-shadow: 0 0 30px hsl(var(--cosmic-glow) / 0.2);
     }
 
+    .glow-primary {
+        transition: box-shadow 0.3s ease;
+    }
+
+    .glow-primary:hover {
+        box-shadow: 0 0 10px rgba(244, 140, 65, 0.9);
+    }
+
+    .glow-primary-light {
+        transition: box-shadow 0.3s ease;
+    }
+
+    .glow-primary-light:hover {
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
+            0 0 5px rgba(244, 140, 65, 0.9);
+    }
+
     .border-gradient-glow {
         position: relative;
         border-radius: 1rem;
@@ -260,49 +277,4 @@
         transform: translateY(-3px);
     }
 
-    /*  */
-    .bg-market-spot {
-        /* background-color: transparent;
-        transform: translateY(25%);
-        background-image:
-            radial-gradient(50% 40% at 50% 120%,
-                rgba(255, 190, 85, 0.26) 0%,
-                rgba(255, 140, 0, 0.12) 30%,
-                rgba(0, 0, 0, 0) 60%);
-        filter: drop-shadow(16px);
-        background-repeat: no-repeat;
-        background-position: center top;
-        background-size: cover;
-        background-blend-mode: overlay; */
-        background-color: hsl(var(--background));
-        background-image:
-            radial-gradient(circle at 90% -45%,
-                var(--spotlight-center) 0%,
-                transparent 40%),
-
-            radial-gradient(circle at 70% 0%,
-                var(--spotlight-side) 0%,
-                transparent 20%);
-
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-        width: 100%;
-    }
-
-    /* fine-tune for smaller screens: move/scale spots down */
-    @media (max-width: 768px) {
-        .bg-market-spot {
-            background-image:
-                radial-gradient(60% 50% at 30% 40%,
-                    rgba(255, 160, 60, 0.16) 0%,
-                    rgba(255, 120, 40, 0.09) 22%,
-                    rgba(0, 0, 0, 0) 60%),
-                radial-gradient(80% 60% at 80% 10%,
-                    rgba(255, 200, 120, 0.05) 0%,
-                    rgba(255, 160, 90, 0.02) 30%,
-                    rgba(0, 0, 0, 0) 70%),
-                url('/mnt/data/6ce50fa3-8134-4436-b18f-804ab67592f9.png');
-            background-size: cover;
-        }
-    }
 }

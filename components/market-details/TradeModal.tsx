@@ -61,10 +61,10 @@ export default function TradeModal({ isOpen, onClose, market, selectedOutcome }:
 
 		if (isSelected) {
 			return {
-				container: `${theme.bg} border-transparent`,
+				container: `${theme.border} `,
 				text: "text-white",
-				dot: "bg-white",
-				percentage: "text-white/90",
+				dot: `${theme.bg}`,
+				percentage: `${theme.text}`,
 			}
 		}
 
@@ -164,7 +164,7 @@ export default function TradeModal({ isOpen, onClose, market, selectedOutcome }:
 				</div>
 
 				{/* Action Button */}
-				<Button className="w-full py-6 text-base font-bold text-white bg-primary hover:bg-primary-dark rounded-xl mb-6 shadow-lg shadow-orange-500/20">
+				<Button className="w-full py-6 text-base font-bold text-white bg-primary-dark hover:bg-primary rounded-xl mb-6 glow-primary">
 					Trade Bet
 				</Button>
 

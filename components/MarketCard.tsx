@@ -6,7 +6,7 @@ import Link from "next/link"
 export default function MarketCard({ market }: { market: Market }) {
 	return (
 		<Link href={`/markets/market/${market.id}`} className="block group">
-			<div className="card-wrapper flex flex-col bg-secondary-dark rounded-lg p-4 pt-8 hover:border hover:border-primary shadow-md hover:shadow-primary-light">
+			<div className="card-wrapper flex flex-col bg-secondary-dark rounded-lg p-4 pt-8 hover:border hover:border-primary glow-primary-light">
 				<div className="card-title text-center mb-4 font-bold text-lg">
 					<h2>
 						<span>Logo</span> PulseDelta Market
@@ -73,7 +73,7 @@ export default function MarketCard({ market }: { market: Market }) {
 					</div>
 
 					{/* Place Bet Button */}
-					<button className="w-full px-4 py-3 rounded-lg bg-primary hover:shadow-md hover:shadow-primary-foreground transition text-white font-bold text-sm sm:text-base">
+					<button className="w-full px-4 py-3 rounded-lg bg-primary glow-primary text-white font-bold text-sm sm:text-base">
 						Place Bet
 					</button>
 				</div>
