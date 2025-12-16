@@ -13,10 +13,10 @@ import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
 import { CreateMarketProvider } from "@/context/CreateMarketContext"
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+// import { Inter } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+// const inter = Inter({ subsets: ['latin'] })
 
 import { headers } from 'next/headers' // added
 import ContextProvider from '@/context'
@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={cn(poppins.variable, "font-sans antialiased")}>
+			<body className={cn(poppins.variable, "font-sans antialiased")} >
 			<ContextProvider cookies={cookies}>
 				<ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
 					<CreateMarketProvider>

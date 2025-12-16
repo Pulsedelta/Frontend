@@ -1,4 +1,4 @@
-const CategoricalMarket = [
+export const CategoricalMarket = [
     {
       "type": "constructor",
       "inputs": [

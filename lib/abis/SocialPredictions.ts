@@ -1,4 +1,4 @@
-const SocialPredictions = [
+export const SocialPredictions = [
     {
       "type": "constructor",
       "inputs": [],

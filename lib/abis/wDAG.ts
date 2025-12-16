@@ -1,4 +1,4 @@
-const wDAG = [
+export const wDAG = [
     {
       "type": "constructor",
       "inputs": [],

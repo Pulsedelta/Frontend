@@ -11,7 +11,7 @@ import Step2_Outcomes from "@/components/steps/Step2_Outcomes"
 import Step4_Review from "@/components/steps/Step4_Review"
 
 const CreateMarket: React.FC = () => {
-	const { currentStep, totalSteps, marketSteps, formData, handleNext, handleBack, handleSubmit } = useCreateMarket()
+	const { currentStep, totalSteps, formData, handleNext, handleBack, handleSubmit } = useCreateMarket()
 
 	const currentStepData = useMemo(() => {
 		const isMultiOutcome = formData.marketType === "multi"
@@ -227,7 +227,7 @@ const CreateMarket: React.FC = () => {
 				</div>
 
 				<div className="bg p-4 sm:p-8">
-					<ProgressBar currentStep={currentStep} totalSteps={totalSteps} steps={marketSteps} />
+					<ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
 
 					<div className="mb-4 pb-4 text-center">
 						<h2 className="text-2xl font-bold text-foreground">{currentStepData?.title}</h2>

@@ -1,5 +1,5 @@
-const wDAG_Address = "0xFFa3A0Ea10FE30a5d7c0F1B5597c189A38364E67"
-const SocialPredictions_Address = "0x5A76D4AB409CA2114808eDD38cB9A8343a34b7Fb"
-const CategoricalMarketFactory_Address = "0x42957B36F5623912dED1a0A16bba3dad22E571C9"
-const CategoricalMarket_Address = "0x2384Fb916b352f7e3c96AbE0Eb7eB2cC1637e782"
+export const wDAG_Address = "0xFFa3A0Ea10FE30a5d7c0F1B5597c189A38364E67"
+export const SocialPredictions_Address = "0x5A76D4AB409CA2114808eDD38cB9A8343a34b7Fb"
+export const CategoricalMarketFactory_Address = "0x42957B36F5623912dED1a0A16bba3dad22E571C9"
+export const CategoricalMarket_Address = "0x2384Fb916b352f7e3c96AbE0Eb7eB2cC1637e782"
 

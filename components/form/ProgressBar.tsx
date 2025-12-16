@@ -1,19 +1,14 @@
 import React from "react"
 
-interface Step {
-	title: string
-}
-
 interface ProgressBarProps {
 	currentStep: number
 	totalSteps: number
-	steps: Step[]
 }
 
 /**
  * Renders the responsive progress bar for the multi-step form.
  */
-export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, totalSteps, steps }) => {
+export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, totalSteps }) => {
 	// Calculate progress percentage
 	const progressPercentage = totalSteps > 1 ? ((currentStep - 1) / (totalSteps - 1)) * 100 : 100
 
