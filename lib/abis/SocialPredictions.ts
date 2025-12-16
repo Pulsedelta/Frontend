@@ -1,6 +1,4 @@
-contract Address=0x5A76D4AB409CA2114808eDD38cB9A8343a34b7Fb
-
-[
+const SocialPredictions = [
     {
       "type": "constructor",
       "inputs": [],

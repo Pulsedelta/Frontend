@@ -1,6 +1,4 @@
-contract Address=0x42957B36F5623912dED1a0A16bba3dad22E571C9
-
-[
+const CategoricalMarketFactory = [
     {
       "type": "constructor",
       "inputs": [

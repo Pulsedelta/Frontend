@@ -1,5 +1,4 @@
-contract Address=0xFFa3A0Ea10FE30a5d7c0F1B5597c189A38364E67
-[
+const wDAG = [
     {
       "type": "constructor",
       "inputs": [],
