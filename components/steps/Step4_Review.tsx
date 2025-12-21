@@ -1,9 +1,11 @@
-import { useCreateMarket } from "@/hooks/useCreateMarket"
 import React from "react"
+import { MarketFormData } from "@/types/types"
 
-const Step4_Review: React.FC = () => {
-	const { formData } = useCreateMarket()
+interface Step4_ReviewProps {
+  formData: MarketFormData;
+}
 
+const Step4_Review: React.FC<Step4_ReviewProps> = ({ formData }) => {
 	const description = formData.description || ""
 	const validOutcomes = formData.outcomes?.filter((o) => o.option.trim() !== "") || []
 
@@ -48,54 +50,44 @@ const Step4_Review: React.FC = () => {
 							{validOutcomes.map((outcome, index) => (
 								<div key={outcome.id} className="bg-zinc-900/30 rounded-lg p-3 border border-border/30">
 									<div className="flex items-start gap-2">
-										<span className="text-primary font-semibold min-w-[24px]">
-											{String.fromCharCode(65 + index)}.
-										</span>
-										<div className="flex-1">
-											<p className="text-foreground font-semibold">{outcome.option}</p>
-											{outcome.description && (
-												<p className="text-muted-foreground text-sm mt-1">
-													{outcome.description}
-												</p>
-											)}
-										</div>
+										<span className="text-sm font-medium text-foreground">{outcome.option}</span>
 									</div>
+									{outcome.description && (
+										<p className="mt-1 text-xs text-muted-foreground">{outcome.description}</p>
+									)}
 								</div>
 							))}
 						</div>
 					</div>
 				)}
 
-				{/* Trading Fee */}
-				<div className="flex justify-between border-b border-border/50 pb-2">
-					<span className="text-muted-foreground font-medium">Trading Fee:</span>
-					<span className="text-foreground font-semibold">{formData.tradingFee}%</span>
-				</div>
-
-				{/* Initial Liquidity */}
+				{/* Liquidity */}
 				<div className="flex justify-between border-b border-border/50 pb-2">
 					<span className="text-muted-foreground font-medium">Initial Liquidity:</span>
-					<span className="text-foreground font-semibold">{formData.liquidity} wBDAG</span>
-				</div>
-
-				{/* Resolution Source */}
-				<div className="flex justify-between border-b border-border/50 pb-2">
-					<span className="text-muted-foreground font-medium">Resolution Source:</span>
 					<span className="text-foreground font-semibold">
-						{formData.resolutionSource || "(Not provided)"}
+						{formData.liquidity ? `$${formData.liquidity}` : "Not specified"}
 					</span>
 				</div>
 
-				{/* Resolution Date */}
-				<div className="flex justify-between">
-					<span className="text-muted-foreground font-medium">Resolution Date:</span>
-					<span className="text-foreground font-semibold">{formData.resolutionDate || "(Not provided)"}</span>
-				</div>
+				{/* Resolution Source */}
+				{formData.resolutionSource && (
+					<div className="border-b border-border/50 pb-2">
+						<p className="text-muted-foreground font-medium mb-1">Resolution Source:</p>
+						<p className="text-foreground text-sm break-all">
+							{formData.resolutionSource}
+						</p>
+					</div>
+				)}
 
-				{/* Warning */}
-				<p className="pt-4 text-sm text-yellow-400">
-					⚠️ IMPORTANT: Once deployed, this market is immutable and cannot be edited.
-				</p>
+				{/* Resolution Date */}
+				{formData.resolutionDate && (
+					<div className="flex justify-between">
+						<span className="text-muted-foreground font-medium">Resolution Date:</span>
+						<span className="text-foreground font-medium">
+							{new Date(formData.resolutionDate).toLocaleString()}
+						</span>
+					</div>
+				)}
 			</div>
 		</div>
 	)

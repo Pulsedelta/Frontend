@@ -1,6 +1,14 @@
-import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { Address } from 'viem';
-import { CategoricalMarketFactory } from '@/lib/abis/CategoricalMarketFactory';
+'use client'
+import { useCallback } from "react";
+import {
+  useReadContract,
+  useWriteContract,
+  useWaitForTransactionReceipt,
+} from "wagmi";
+import { useConnection } from "wagmi";
+import { Address } from "viem";
+import { CategoricalMarketFactory } from "@/lib/abis/CategoricalMarketFactory";
+import { CategoricalMarketFactory_Address } from "@/lib/address";
 
 export interface MarketSummary {
   market: Address;
@@ -29,33 +37,43 @@ export interface CreateMarketResult {
   lpTokenAddr: Address;
 }
 
-export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
-  const { writeContract, data: hash, isPending, error: writeError } = useWriteContract();
-  
-  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-    hash,
-  });
+export const useCategoricalMarketFactory = (
+  factoryAddress: Address = CategoricalMarketFactory_Address
+) => {
+  const { isConnected } = useConnection();
+  const {
+    writeContractAsync,
+    data: txHash,
+    isPending,
+    error: writeError,
+    reset
+  } = useWriteContract();
+
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash: txHash,
+    });
 
   // ============= READ FUNCTIONS - CONSTANTS =============
 
   const { data: maxOutcomes } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'MAX_OUTCOMES',
+    functionName: "MAX_OUTCOMES",
     query: { enabled: !!factoryAddress },
   }) as { data: bigint | undefined };
 
   const { data: minInitialLiquidity } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'MIN_INITIAL_LIQUIDITY',
+    functionName: "MIN_INITIAL_LIQUIDITY",
     query: { enabled: !!factoryAddress },
   }) as { data: bigint | undefined };
 
   const { data: minMarketDuration } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'MIN_MARKET_DURATION',
+    functionName: "MIN_MARKET_DURATION",
     query: { enabled: !!factoryAddress },
   }) as { data: bigint | undefined };
 
@@ -64,81 +82,83 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
   const { data: admin } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'admin',
+    functionName: "admin",
     query: { enabled: !!factoryAddress },
   }) as { data: Address | undefined };
 
   const { data: collateralToken } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'collateralToken',
+    functionName: "collateralToken",
     query: { enabled: !!factoryAddress },
   }) as { data: Address | undefined };
 
   const { data: feeManager } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'feeManager',
+    functionName: "feeManager",
     query: { enabled: !!factoryAddress },
   }) as { data: Address | undefined };
 
   const { data: marketImplementation } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'marketImplementation',
+    functionName: "marketImplementation",
     query: { enabled: !!factoryAddress },
   }) as { data: Address | undefined };
 
   const { data: oracleResolver } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'oracleResolver',
+    functionName: "oracleResolver",
     query: { enabled: !!factoryAddress },
   }) as { data: Address | undefined };
 
   const { data: owner } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'owner',
+    functionName: "owner",
     query: { enabled: !!factoryAddress },
   }) as { data: Address | undefined };
 
   const { data: socialPredictions } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'socialPredictions',
+    functionName: "socialPredictions",
     query: { enabled: !!factoryAddress },
   }) as { data: Address | undefined };
 
   // ============= READ FUNCTIONS - FACTORY CONFIG =============
 
-  const { data: factoryConfig, refetch: refetchFactoryConfig } = useReadContract({
-    address: factoryAddress,
-    abi: CategoricalMarketFactory,
-    functionName: 'getFactoryConfig',
-    query: { enabled: !!factoryAddress },
-  }) as { data: FactoryConfig | undefined; refetch: () => void };
+  const { data: factoryConfig, refetch: refetchFactoryConfig } =
+    useReadContract({
+      address: factoryAddress,
+      abi: CategoricalMarketFactory,
+      functionName: "getFactoryConfig",
+      query: { enabled: !!factoryAddress },
+    }) as { data: FactoryConfig | undefined; refetch: () => void };
 
   // ============= READ FUNCTIONS - MARKET QUERIES =============
 
   const { data: allMarkets, refetch: refetchAllMarkets } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'getAllMarkets',
+    functionName: "getAllMarkets",
     query: { enabled: !!factoryAddress },
   }) as { data: Address[] | undefined; refetch: () => void };
 
-  const { data: activeMarkets, refetch: refetchActiveMarkets } = useReadContract({
-    address: factoryAddress,
-    abi: CategoricalMarketFactory,
-    functionName: 'getActiveMarkets',
-    query: { enabled: !!factoryAddress },
-  }) as { data: Address[] | undefined; refetch: () => void };
+  const { data: activeMarkets, refetch: refetchActiveMarkets } =
+    useReadContract({
+      address: factoryAddress,
+      abi: CategoricalMarketFactory,
+      functionName: "getActiveMarkets",
+      query: { enabled: !!factoryAddress },
+    }) as { data: Address[] | undefined; refetch: () => void };
 
   const { data: marketCount, refetch: refetchMarketCount } = useReadContract({
     address: factoryAddress,
     abi: CategoricalMarketFactory,
-    functionName: 'getMarketCount',
+    functionName: "getMarketCount",
     query: { enabled: !!factoryAddress },
   }) as { data: bigint | undefined; refetch: () => void };
 
@@ -149,7 +169,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     const { data: market, refetch } = useReadContract({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'allMarkets',
+      functionName: "allMarkets",
       args: [BigInt(index)],
       query: { enabled: !!factoryAddress && index >= 0 },
     }) as { data: Address | undefined; refetch: () => void };
@@ -162,7 +182,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     const { data: isMarket, refetch } = useReadContract({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'isMarket',
+      functionName: "isMarket",
       args: marketAddress ? [marketAddress] : undefined,
       query: { enabled: !!factoryAddress && !!marketAddress },
     }) as { data: boolean | undefined; refetch: () => void };
@@ -175,7 +195,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     const { data: outcomeToken, refetch } = useReadContract({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'getOutcomeToken',
+      functionName: "getOutcomeToken",
       args: marketAddress ? [marketAddress] : undefined,
       query: { enabled: !!factoryAddress && !!marketAddress },
     }) as { data: Address | undefined; refetch: () => void };
@@ -188,7 +208,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     const { data: lpToken, refetch } = useReadContract({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'getLPToken',
+      functionName: "getLPToken",
       args: marketAddress ? [marketAddress] : undefined,
       query: { enabled: !!factoryAddress && !!marketAddress },
     }) as { data: Address | undefined; refetch: () => void };
@@ -201,7 +221,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     const { data: summary, refetch } = useReadContract({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'getMarketSummary',
+      functionName: "getMarketSummary",
       args: marketAddress ? [marketAddress] : undefined,
       query: { enabled: !!factoryAddress && !!marketAddress },
     }) as { data: MarketSummary | undefined; refetch: () => void };
@@ -214,7 +234,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     const { data: markets, refetch } = useReadContract({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'getMarketsByStatus',
+      functionName: "getMarketsByStatus",
       args: [status],
       query: { enabled: !!factoryAddress },
     }) as { data: Address[] | undefined; refetch: () => void };
@@ -227,7 +247,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     const { data: markets, refetch } = useReadContract({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'getRecentMarkets',
+      functionName: "getRecentMarkets",
       args: [BigInt(count)],
       query: { enabled: !!factoryAddress && count > 0 },
     }) as { data: Address[] | undefined; refetch: () => void };
@@ -240,7 +260,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     const { data: summaries, refetch } = useReadContract({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'getMarketSummaries',
+      functionName: "getMarketSummaries",
       args: [BigInt(offset), BigInt(limit)],
       query: { enabled: !!factoryAddress && limit > 0 },
     }) as { data: MarketSummary[] | undefined; refetch: () => void };
@@ -253,7 +273,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     const { data: outcomeToken, refetch } = useReadContract({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'marketToOutcomeToken',
+      functionName: "marketToOutcomeToken",
       args: marketAddress ? [marketAddress] : undefined,
       query: { enabled: !!factoryAddress && !!marketAddress },
     }) as { data: Address | undefined; refetch: () => void };
@@ -266,7 +286,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     const { data: lpToken, refetch } = useReadContract({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'marketToLPToken',
+      functionName: "marketToLPToken",
       args: marketAddress ? [marketAddress] : undefined,
       query: { enabled: !!factoryAddress && !!marketAddress },
     }) as { data: Address | undefined; refetch: () => void };
@@ -277,71 +297,103 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
   // ============= WRITE FUNCTIONS =============
 
   // Create market
-  const createMarket = async (
+  const createMarket = useCallback(async (
     metadataURI: string,
     numOutcomes: bigint,
     resolutionTime: bigint,
     initialLiquidity: bigint
   ) => {
-    if (!factoryAddress) throw new Error('Factory address required');
-    
-    writeContract({
-      address: factoryAddress,
-      abi: CategoricalMarketFactory,
-      functionName: 'createMarket',
-      args: [
-        metadataURI as `0x${string}`,
-        numOutcomes,
-        resolutionTime,
-        initialLiquidity,
-      ],
-    });
-  };
+    try {
+      console.log("Starting createMarket with params:", {
+        metadataURI,
+        numOutcomes: numOutcomes.toString(),
+        resolutionTime: resolutionTime.toString(),
+        initialLiquidity: initialLiquidity.toString(),
+        isConnected,
+        factoryAddress
+      });
+
+      if (!isConnected) {
+        throw new Error("Please connect your wallet first");
+      }
+
+      if (!factoryAddress) {
+        throw new Error("Factory address is not set");
+      }
+
+      // Reset any previous state
+      reset();
+
+      console.log("Calling writeContract with:", {
+        address: factoryAddress,
+        functionName: "createMarket",
+        args: [metadataURI, numOutcomes, resolutionTime, initialLiquidity],
+      });
+
+      const hash = await writeContractAsync({
+        address: factoryAddress,
+        abi: CategoricalMarketFactory,
+        functionName: "createMarket",
+        args: [
+          metadataURI as `0x${string}`,
+          numOutcomes,
+          resolutionTime,
+          initialLiquidity,
+        ],
+      });
+
+      console.log("Transaction hash received:", hash);
+      return hash;
+    } catch (error) {
+      console.error("Error in createMarket:", error);
+      throw error;
+    }
+  }, [factoryAddress, isConnected, reset, writeContractAsync]);
 
   // Set admin
   const setAdmin = async (newAdmin: Address) => {
-    if (!factoryAddress) throw new Error('Factory address required');
-    
-    writeContract({
+    if (!factoryAddress) throw new Error("Factory address required");
+
+    writeContractAsync({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'setAdmin',
+      functionName: "setAdmin",
       args: [newAdmin],
     });
   };
 
   // Set oracle
   const setOracle = async (newOracle: Address) => {
-    if (!factoryAddress) throw new Error('Factory address required');
-    
-    writeContract({
+    if (!factoryAddress) throw new Error("Factory address required");
+
+    writeContractAsync({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'setOracle',
+      functionName: "setOracle",
       args: [newOracle],
     });
   };
 
   // Transfer ownership
   const transferOwnership = async (newOwner: Address) => {
-    if (!factoryAddress) throw new Error('Factory address required');
-    
-    writeContract({
+    if (!factoryAddress) throw new Error("Factory address required");
+
+    writeContractAsync({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'transferOwnership',
+      functionName: "transferOwnership",
       args: [newOwner],
     });
   };
 
   // Renounce ownership
   const renounceOwnership = async () => {
-    if (!factoryAddress) throw new Error('Factory address required');
-    
-    writeContract({
+    if (!factoryAddress) throw new Error("Factory address required");
+
+    writeContractAsync({
       address: factoryAddress,
       abi: CategoricalMarketFactory,
-      functionName: 'renounceOwnership',
+      functionName: "renounceOwnership",
     });
   };
 
@@ -394,7 +446,7 @@ export const useCategoricalMarketFactory = (factoryAddress?: Address) => {
     refetchMarketCount,
 
     // Transaction state
-    hash,
+    txHash,
     isPending,
     isConfirming,
     isConfirmed,

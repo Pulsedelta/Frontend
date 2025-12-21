@@ -46,8 +46,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 				<ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
 					<CreateMarketProvider>
 						<TooltipProvider>
-							<Toaster />
-							<Sonner />
+							<Toaster/>
+							<Sonner 
+								duration={5000}
+								visibleToasts={1}
+							/>
 							<Navbar />
 							{children}
 							<Footer />
