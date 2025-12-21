@@ -1,17 +1,51 @@
 "use client"
-import React, { useMemo } from "react"
+import React, { useMemo, useState, useCallback } from "react"
 import { ChevronsRight } from "lucide-react"
 import { ProgressBar } from "@/components/form/ProgressBar"
 import { Button } from "@/components/ui/button"
-import { useCreateMarket } from "@/hooks/useCreateMarket"
+import { useCategoricalMarketFactory } from "@/hooks/useCategoricalMarketFactory"
 import Step0_CategorySelection from "@/components/steps/Step0_CategorySelection"
 import Step1_TypeSelection from "@/components/steps/Step1_TypeSelection"
 import Step2_MarketDetails from "@/components/steps/Step2_MarketDetails"
 import Step2_Outcomes from "@/components/steps/Step2_Outcomes"
 import Step4_Review from "@/components/steps/Step4_Review"
+import { uploadMarketMetadata } from "@/utils/ipfs"
+import { initialFormData } from "@/context/CreateMarketContext"
+import { toast } from "sonner"
+import { useConnection } from "wagmi"
 
 const CreateMarket: React.FC = () => {
-	const { currentStep, totalSteps, formData, handleNext, handleBack, handleSubmit } = useCreateMarket()
+	const { isConnected, isConnecting } = useConnection()
+	const {
+		createMarket,
+		isPending,
+		isConfirmed,
+		isConfirming,
+		writeError,
+	 } = useCategoricalMarketFactory()
+	const [isSubmitting, setIsSubmitting] = useState(false)
+
+	const [formData, setFormData] = useState(initialFormData)
+	const [currentStep, setCurrentStep] = useState(1)
+	const [isUploading, setIsUploading] = useState(false)
+	const [uploadError, setUploadError] = useState<string | null>(null)
+
+	const marketSteps = useMemo(() => {
+		const isMultiOutcome = formData.marketType === "multi";
+		return isMultiOutcome ? 5 : 4; // 5 steps for multi-outcome, 4 for binary/scalar
+	}, [formData.marketType]);
+
+	const handleNext = useCallback(() => {
+		if (currentStep < marketSteps) {
+			setCurrentStep(prev => prev + 1);
+		}
+	}, [currentStep, marketSteps]);
+
+	const handleBack = useCallback(() => {
+		if (currentStep > 1) {
+			setCurrentStep(prev => prev - 1);
+		}
+	}, [currentStep]);
 
 	const currentStepData = useMemo(() => {
 		const isMultiOutcome = formData.marketType === "multi"
@@ -139,6 +173,18 @@ const CreateMarket: React.FC = () => {
 		}
 	}, [currentStep, formData])
 
+	const handleFormChange = useCallback((name: string, value: any) => {
+    console.log(`[Form Change] ${name}:`, value);
+    setFormData(prev => {
+      const newData = {
+        ...prev,
+        [name]: value
+      };
+      console.log('Updated form data:', newData);
+      return newData;
+    });
+  }, []);
+
 	const renderStepContent = () => {
 		const isMultiOutcome = formData.marketType === "multi"
 
@@ -146,15 +192,33 @@ const CreateMarket: React.FC = () => {
 		if (isMultiOutcome) {
 			switch (currentStep) {
 				case 1:
-					return <Step0_CategorySelection />
+					return (
+						<Step0_CategorySelection 
+							selectedCategory={formData.marketCategory}
+							onSelectCategory={(category) => handleFormChange('marketCategory', category)}
+						/>
+					)
 				case 2:
-					return <Step1_TypeSelection />
+					return (
+						<Step1_TypeSelection 
+							selectedType={formData.marketType}
+							onSelectType={(type) => handleFormChange('marketType', type)}
+						/>
+					)
 				case 3:
-					return <Step2_MarketDetails />
+					return <Step2_MarketDetails 
+						formData={formData}
+						onFormChange={handleFormChange}
+					/>
 				case 4:
-					return <Step2_Outcomes />
+					return (
+						<Step2_Outcomes 
+							outcomes={formData.outcomes || []}
+							onOutcomesChange={(updatedOutcomes) => handleFormChange('outcomes', updatedOutcomes)}
+						/>
+					)
 				case 5:
-					return <Step4_Review />
+					return <Step4_Review formData={formData} />
 				default:
 					return <div>Step not found.</div>
 			}
@@ -162,13 +226,26 @@ const CreateMarket: React.FC = () => {
 			// Binary or Scalar - skip outcomes step
 			switch (currentStep) {
 				case 1:
-					return <Step0_CategorySelection />
+					return (
+						<Step0_CategorySelection 
+							selectedCategory={formData.marketCategory}
+							onSelectCategory={(category) => handleFormChange('marketCategory', category)}
+						/>
+					)
 				case 2:
-					return <Step1_TypeSelection />
+					return (
+						<Step1_TypeSelection 
+							selectedType={formData.marketType}
+							onSelectType={(type) => handleFormChange('marketType', type)}
+						/>
+					)
 				case 3:
-					return <Step2_MarketDetails />
+					return <Step2_MarketDetails
+						formData={formData}
+						onFormChange={handleFormChange}
+					/>
 				case 4:
-					return <Step4_Review />
+					return <Step4_Review formData={formData} />
 				default:
 					return <div>Step not found.</div>
 			}
@@ -183,16 +260,15 @@ const CreateMarket: React.FC = () => {
 	}
 
 	const handleNextClick = (e: React.MouseEvent) => {
-		e.preventDefault()
-		e.stopPropagation()
-
+		e.preventDefault();
+		e.stopPropagation();
+		
 		if (!isStepValid) {
-			console.warn("[Page] Cannot proceed - step validation failed")
-			return
+			console.warn("Cannot proceed - current step is not valid");
+			return;
 		}
-
-		console.log("[Page] Next button clicked on step:", currentStep)
-		handleNext()
+		
+		handleNext();
 	}
 
 	const handleBackClick = (e: React.MouseEvent) => {
@@ -202,16 +278,97 @@ const CreateMarket: React.FC = () => {
 		handleBack()
 	}
 
-	const handleDeployClick = () => {
-		if (!isStepValid) {
-			console.warn("[Page] Cannot deploy - validation failed")
-			return
+	const handleDeployClick = async () => {
+		if (!isConnected) {
+			await isConnecting;
+			// Wait a bit for the wallet to connect
+			await new Promise(resolve => setTimeout(resolve, 1000));
 		}
+		
+		if (!isConnected) {
+			toast.error("Please connect your wallet first");
+			return;
+		}
+		
+		const toastId = toast.loading("Starting market creation...");
+		
+		try {
+			// 1. Validate form data
+			if (!formData.question || !formData.description || !formData.resolutionDate) {
+				throw new Error("Please fill in all required fields");
+			}
+			
+			// 2. Upload metadata to IPFS
+			toast.loading("Uploading metadata to IPFS...", { id: toastId });
+			const metadata = {
+				question: formData.question,
+				description: formData.description,
+				category: formData.marketCategory,
+				type: formData.marketType,
+				resolutionSource: formData.resolutionSource,
+				resolutionDate: formData.resolutionDate,
+				outcomes: formData.outcomes?.map(outcome => ({
+					option: outcome.option,
+					description: outcome.description || ''
+				})) || []
+			};
+			
+			const metadataURI = await uploadMarketMetadata(metadata);
+			
+			if (!metadataURI) {
+				throw new Error("Failed to upload metadata to IPFS");
+			}
+			
+			toast.success("Metadata uploaded successfully!", { id: toastId });
 
-		console.log("[Page] Deploy button clicked - submitting form")
-		const syntheticEvent = { preventDefault: () => {} } as React.FormEvent
-		handleSubmit(syntheticEvent)
-	}
+			// 3. Prepare transaction parameters
+			toast.loading("Preparing transaction...", { id: toastId });
+			const numOutcomes = formData.outcomes?.length || 2; // Default to 2 for binary markets
+			const resolutionTime = Math.floor(new Date(formData.resolutionDate).getTime() / 1000);
+			const initialLiquidity = BigInt(Math.floor(Number(formData.liquidity) * 1e18));
+
+			// 4. Execute contract call
+			toast.loading("Please confirm the transaction in your wallet...", { id: toastId });
+			
+			const result = await createMarket(
+				metadataURI,
+				BigInt(numOutcomes),
+				resolutionTime,
+				initialLiquidity
+			);
+
+			if (!result) {
+				throw new Error("Transaction failed or was rejected");
+			}
+
+			// 5. Transaction successful
+			toast.success("Transaction sent!", { 
+				id: toastId,
+				description: "Your market creation is being processed on the blockchain."
+			});
+
+			// 6. Wait for transaction to be confirmed
+			const { isConfirmed } = await waitForTransactionReceipt({ hash: result });
+			
+			if (isConfirmed) {
+				toast.success("Market created successfully!", { 
+					id: toastId,
+					description: "Your prediction market has been created on the blockchain!"
+				});
+				
+				// Reset form and go to first step
+				setFormData(initialFormData);
+				setCurrentStep(1);
+			}
+			
+		} catch (error) {
+			console.error("Error in market creation:", error);
+			toast.error("Failed to create market", { 
+				id: toastId,
+				description: error instanceof Error ? error.message : "An unknown error occurred"
+			});
+		}
+	};
 
 	return (
 		<div className="min-h-screen cosmic-gradient px-4">
@@ -227,7 +384,7 @@ const CreateMarket: React.FC = () => {
 				</div>
 
 				<div className="bg p-4 sm:p-8">
-					<ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
+					<ProgressBar currentStep={currentStep} totalSteps={marketSteps} />
 
 					<div className="mb-4 pb-4 text-center">
 						<h2 className="text-2xl font-bold text-foreground">{currentStepData?.title}</h2>
@@ -247,7 +404,7 @@ const CreateMarket: React.FC = () => {
 								</Button>
 							)}
 
-							{currentStep < totalSteps ? (
+							{currentStep < marketSteps ? (
 								<Button
 									type="button"
 									onClick={handleNextClick}
@@ -260,9 +417,9 @@ const CreateMarket: React.FC = () => {
 								<Button
 									type="button"
 									onClick={handleDeployClick}
-									disabled={!isStepValid}
+									disabled={!isStepValid || isSubmitting}
 									className="bg-primary text-primary-foreground hover:bg-transparent hover:border hover:border-secondary-light disabled:opacity-50 disabled:cursor-not-allowed">
-									Deploy Market
+									{isSubmitting ? "Deploying..." : "Deploy Market"}
 								</Button>
 							)}
 						</div>

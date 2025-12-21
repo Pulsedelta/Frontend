@@ -1,6 +1,7 @@
 'use client'
 import { CreateMarketContextType, MarketFormData, MarketStep } from "@/types/types"
 import React, { useState, useMemo, createContext, useCallback } from "react"
+import { uploadMarketMetadata } from "@/utils/ipfs"
 
 export const BASE_MARKET_STEPS: MarketStep[] = [
 	{ id: 1, title: "Market Category", description: "Select the best structure for your prediction market." },
@@ -36,6 +37,8 @@ export const CreateMarketContext = createContext<CreateMarketContextType | undef
 export const CreateMarketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [currentStep, setCurrentStep] = useState(1)
 	const [formData, setFormData] = useState<MarketFormData>(initialFormData)
+	const [isUploading, setIsUploading] = useState(false)
+	const [uploadError, setUploadError] = useState<string | null>(null)
 
 	// Calculate steps dynamically based on market type
 	const marketSteps = useMemo(() => {
@@ -90,34 +93,57 @@ export const CreateMarketProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
 	// 4. Handle final submission
 	const handleSubmit = useCallback(
-		(e: React.FormEvent) => {
+		async (e: React.FormEvent) => {
 			e.preventDefault()
-			console.log("[handleSubmit] Deploying market with data:", formData)
+			console.log("[handleSubmit] Starting market creation process")
+			
+			setIsUploading(true)
+			setUploadError(null)
 
-			// Prepare data for blockchain
-			const marketData = {
-				category: formData.marketCategory,
-				type: formData.marketType,
-				question: formData.question,
-				description: formData.description,
-				tradingFee: formData.tradingFee,
-				liquidity: formData.liquidity,
-				resolutionSource: formData.resolutionSource,
-				resolutionDate: formData.resolutionDate,
-				// Only include outcomes for multi-outcome markets
-				...(formData.marketType === "multi" && {
-					outcomes: formData.outcomes?.filter((o) => o.option.trim() !== ""),
-				}),
+			try {
+				// Prepare metadata for IPFS
+				const metadata = {
+					question: formData.question,
+					description: formData.description,
+					category: formData.marketCategory,
+					type: formData.marketType,
+					resolutionSource: formData.resolutionSource,
+					resolutionDate: formData.resolutionDate,
+					...(formData.marketType === 'multi' && formData.outcomes && { 
+						outcomes: formData.outcomes 
+					}),
+					// Add any additional metadata fields here
+					timestamp: new Date().toISOString(),
+				}
+
+				console.log("Uploading market metadata to IPFS...")
+				const metadataURI = await uploadMarketMetadata(metadata)
+				
+				console.log("Metadata uploaded to IPFS. URI:", metadataURI)
+				
+				// Now call your contract with the metadataURI
+				// Example:
+				// await createMarket({
+				//   ...formData,
+				//   metadataURI
+				// })
+				
+				console.log("Market creation process completed successfully!")
+				
+				// Reset form after successful submission
+				setFormData(initialFormData)
+				setCurrentStep(1)
+				
+			} catch (error) {
+				console.error("Error in market creation:", error)
+				setUploadError(
+					error instanceof Error 
+						? error.message 
+						: 'Failed to upload market metadata. Please try again.'
+				)
+			} finally {
+				setIsUploading(false)
 			}
-
-			console.log("[handleSubmit] Formatted market data:", marketData)
-
-			// TODO: Add your blockchain deployment logic here
-			// Example: await deployMarket(marketData)
-
-			// Reset form after successful deployment
-			setFormData(initialFormData)
-			setCurrentStep(1)
 		},
 		[formData]
 	)
@@ -132,8 +158,10 @@ export const CreateMarketProvider: React.FC<{ children: React.ReactNode }> = ({ 
 			handleNext,
 			handleBack,
 			handleSubmit,
+			isUploading,
+			uploadError,
 		}),
-		[formData, currentStep, TOTAL_STEPS, marketSteps, handleFormChange, handleNext, handleBack, handleSubmit]
+		[formData, currentStep, TOTAL_STEPS, marketSteps, handleFormChange, handleNext, handleBack, handleSubmit, isUploading, uploadError]
 	)
 
 	return <CreateMarketContext.Provider value={contextValue}>{children}</CreateMarketContext.Provider>

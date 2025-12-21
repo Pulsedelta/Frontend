@@ -1,5 +1,5 @@
-export const wDAG_Address = "0xFFa3A0Ea10FE30a5d7c0F1B5597c189A38364E67"
-export const SocialPredictions_Address = "0x5A76D4AB409CA2114808eDD38cB9A8343a34b7Fb"
-export const CategoricalMarketFactory_Address = "0x42957B36F5623912dED1a0A16bba3dad22E571C9"
-export const CategoricalMarket_Address = "0x2384Fb916b352f7e3c96AbE0Eb7eB2cC1637e782"
-
+export const wDAG_Address = "0x96d3Ba2067963e8221e635B292b43F07eE2a03B8"
+export const SocialPredictions_Address = "0x16A2D20D54E0e826c1DFBb7B1d8325fe0841f62f"
+export const CategoricalMarketFactory_Address = "0x62FCa1b87606b8c30E7198d6e9bcB214833A8ea0"
+export const CategoricalMarket_Address = "0x391AAd3cDF155eF26d8705A86B4335C6a1cE63A2"
+export const feeRouter = "0xd59B94C4489839Ffd3396D4dF5E382eA1aFE28ef"
